@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Кликер с перерождением 🔄</title>
+    <style>
+        body {
+            background: #0d0d1a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 50px;
+        }
+
+        .left-panel {
+            background: #1e1e3f;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 0 20px cyan;
+            width: 280px;
+        }
+
+        .game-panel {
+            text-align: center;
+            background: #1a1a2e;
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 0 30px gold;
+        }
+
+        button {
+            background: gold;
+            border: none;
+            font-size: 30px;
+            padding: 20px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+            button:active {
+                transform: scale(0.95);
+            }
+
+        .upgrade-btn {
+            background: limegreen;
+            font-size: 18px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 20px;
+        }
+
+        .auto-btn {
+            background: orange;
+            font-size: 18px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 20px;
+        }
+
+        .reset-btn {
+            background: crimson;
+            font-size: 16px;
+            padding: 10px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .prestige-btn {
+            background: purple;
+            font-size: 18px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            border: 2px solid gold;
+        }
+
+        p {
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ЛЕВАЯ ПАНЕЛЬ -->
+    <div class="left-panel">
+        <h2>🔧 ПРОКАЧКА</h2>
+        <p>💰 Баланс: <span id="balance">0</span></p>
+        <p>⚡ Сила клика: <span id="clickPower">1</span></p>
+        <p>🤖 Автокликеров: <span id="autoCount">0</span></p>
+        <p>👑 Перерождений: <span id="prestigeCount">0</span></p>
+
+        <button class="upgrade-btn" id="upgradeBtn">
+            🔥 +1 к силе клика (50💰)
+        </button>
+        <button class="auto-btn" id="autoBtn">
+            🤖 Купить автокликер (500💰)
+        </button>
+        <button class="prestige-btn" id="prestigeBtn">
+            🔄 Перерождение (<span id="prestigeCost">500000</span>💰)
+        </button>
+        <button class="reset-btn" id="resetBtn">
+            🗑️ Сбросить прогресс
+        </button>
+    </div>
+
+    <!-- ИГРА -->
+    <div class="game-panel">
+        <h1>🖱️ КЛИКЕР</h1>
+        <button id="clickBtn">КЛИК</button>
+    </div>
+
+    <script>
+        // Данные
+        let balance = 0;
+        let clickPower = 1;
+        let autoClickers = 0;
+        let prestige = 0; // количество перерождений
+
+        // Элементы
+        const balanceSpan = document.getElementById('balance');
+        const powerSpan = document.getElementById('clickPower');
+        const autoSpan = document.getElementById('autoCount');
+        const prestigeSpan = document.getElementById('prestigeCount');
+        const prestigeCostSpan = document.getElementById('prestigeCost');
+        const clickBtn = document.getElementById('clickBtn');
+        const upgradeBtn = document.getElementById('upgradeBtn');
+        const autoBtn = document.getElementById('autoBtn');
+        const prestigeBtn = document.getElementById('prestigeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // Сохранение
+        function saveGame() {
+            const gameData = { balance, clickPower, autoClickers, prestige };
+            localStorage.setItem('clickerSave', JSON.stringify(gameData));
+        }
+
+        // Загрузка
+        function loadGame() {
+            const saved = localStorage.getItem('clickerSave');
+            if (saved) {
+                const data = JSON.parse(saved);
+                balance = data.balance || 0;
+                clickPower = data.clickPower || 1;
+                autoClickers = data.autoClickers || 0;
+                prestige = data.prestige || 0;
+            }
+            updateUI();
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            balanceSpan.textContent = Math.floor(balance);
+            powerSpan.textContent = clickPower;
+            autoSpan.textContent = autoClickers;
+            prestigeSpan.textContent = prestige;
+            const cost = 500000 * (prestige + 1);
+            prestigeCostSpan.textContent = cost;
+        }
+
+        // Клик
+        clickBtn.addEventListener('click', () => {
+            const multiplier = 1 + prestige; // множитель от перерождений
+            balance += clickPower * multiplier;
+            updateUI();
+            saveGame();
+        });
+
+        // Покупка силы клика
+        upgradeBtn.addEventListener('click', () => {
+            if (balance >= 50) {
+                balance -= 50;
+                clickPower++;
+                updateUI();
+                saveGame();
+            } else {
+                alert('❌ Мало монет!');
+            }
+        });
+
+        // Покупка автокликера
+        autoBtn.addEventListener('click', () => {
+            if (balance >= 500) {
+                balance -= 500;
+                autoClickers++;
+                updateUI();
+                saveGame();
+            } else {
+                alert('❌ Нужно 500 монет!');
+            }
+        });
+
+        // ПЕРЕРОЖДЕНИЕ
+        prestigeBtn.addEventListener('click', () => {
+            const cost = 500000 * (prestige + 1);
+            if (balance >= cost) {
+                // Сброс
+                balance = 0;
+                clickPower = 1;
+                autoClickers = 0;
+                // Увеличиваем счётчик перерождений
+                prestige++;
+                updateUI();
+                saveGame();
+                alert(`✨ Переродился! Теперь множитель ×${1 + prestige}`);
+            } else {
+                alert(`❌ Нужно ${cost} монет для перерождения!`);
+            }
+        });
+
+        // Сброс (с очисткой перерождений)
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Сбросить ВСЁ, включая перерождения?')) {
+                balance = 0;
+                clickPower = 1;
+                autoClickers = 0;
+                prestige = 0;
+                updateUI();
+                saveGame();
+            }
+        });
+
+        // Автокликер
+        setInterval(() => {
+            if (autoClickers > 0) {
+                const multiplier = 1 + prestige;
+                balance += autoClickers * clickPower * multiplier;
+                updateUI();
+                saveGame();
+            }
+        }, 1000);
+
+        // Старт
+        loadGame();
+    </script>
+</body>
+</html>
