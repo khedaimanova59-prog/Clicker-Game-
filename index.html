@@ -1,9 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кликер с перерождением 🔄</title>
     <style>
+        /* Запрещаем зум при двойном тапе */
+        body, button {
+            touch-action: manipulation;
+        }
+
         body {
             background: #0d0d1a;
             color: white;
@@ -39,6 +45,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.1s;
+            touch-action: manipulation;
         }
 
             button:active {
@@ -124,7 +131,7 @@
         let balance = 0;
         let clickPower = 1;
         let autoClickers = 0;
-        let prestige = 0; // количество перерождений
+        let prestige = 0;
 
         // Элементы
         const balanceSpan = document.getElementById('balance');
@@ -169,7 +176,7 @@
 
         // Клик
         clickBtn.addEventListener('click', () => {
-            const multiplier = 1 + prestige; // множитель от перерождений
+            const multiplier = 1 + prestige;
             balance += clickPower * multiplier;
             updateUI();
             saveGame();
@@ -203,11 +210,9 @@
         prestigeBtn.addEventListener('click', () => {
             const cost = 500000 * (prestige + 1);
             if (balance >= cost) {
-                // Сброс
                 balance = 0;
                 clickPower = 1;
                 autoClickers = 0;
-                // Увеличиваем счётчик перерождений
                 prestige++;
                 updateUI();
                 saveGame();
@@ -217,7 +222,7 @@
             }
         });
 
-        // Сброс (с очисткой перерождений)
+        // Сброс
         resetBtn.addEventListener('click', () => {
             if (confirm('Сбросить ВСЁ, включая перерождения?')) {
                 balance = 0;
