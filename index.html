@@ -2,40 +2,42 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Кликер с перерождением 🔄</title>
     <style>
         /* Запрещаем зум при двойном тапе */
         body, button {
             touch-action: manipulation;
         }
-
         body {
             background: #0d0d1a;
             color: white;
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
-            gap: 60px;
-            padding: 50px;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            box-sizing: border-box;
         }
-
         .left-panel {
             background: #1e1e3f;
-            padding: 30px;
+            padding: 25px;
             border-radius: 30px;
             box-shadow: 0 0 20px cyan;
             width: 280px;
+            flex-shrink: 0;
         }
-
         .game-panel {
             text-align: center;
             background: #1a1a2e;
-            padding: 40px;
+            padding: 40px 30px;
             border-radius: 40px;
             box-shadow: 0 0 30px gold;
+            flex-shrink: 0;
         }
-
         button {
             background: gold;
             border: none;
@@ -46,54 +48,85 @@
             cursor: pointer;
             transition: 0.1s;
             touch-action: manipulation;
+            width: 100%;
+            max-width: 300px;
         }
-
-            button:active {
-                transform: scale(0.95);
-            }
-
+        button:active {
+            transform: scale(0.95);
+        }
+        .upgrade-btn, .auto-btn, .prestige-btn, .reset-btn {
+            font-size: 18px;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 20px;
+            max-width: none;
+        }
         .upgrade-btn {
             background: limegreen;
-            font-size: 18px;
-            padding: 12px;
-            width: 100%;
-            margin-top: 15px;
-            border-radius: 20px;
         }
-
         .auto-btn {
             background: orange;
-            font-size: 18px;
-            padding: 12px;
-            width: 100%;
-            margin-top: 15px;
-            border-radius: 20px;
         }
-
-        .reset-btn {
-            background: crimson;
-            font-size: 16px;
-            padding: 10px;
-            width: 100%;
-            margin-top: 15px;
-            border-radius: 20px;
-            color: white;
-        }
-
         .prestige-btn {
             background: purple;
-            font-size: 18px;
-            padding: 12px;
-            width: 100%;
-            margin-top: 20px;
-            border-radius: 20px;
             color: white;
-            font-weight: bold;
             border: 2px solid gold;
         }
-
+        .reset-btn {
+            background: crimson;
+            color: white;
+        }
         p {
             font-size: 22px;
+            margin: 10px 0;
+        }
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        /* 📱 АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ */
+        @media (max-width: 700px) {
+            body {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px;
+            }
+            .left-panel, .game-panel {
+                width: 100%;
+                max-width: 400px;
+                padding: 20px;
+            }
+            .game-panel {
+                padding: 30px 20px;
+            }
+            button {
+                font-size: 26px;
+                padding: 15px 30px;
+            }
+            p {
+                font-size: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        /* 📟 ДЛЯ СОВСЕМ МАЛЕНЬКИХ ЭКРАНОВ */
+        @media (max-width: 400px) {
+            .left-panel, .game-panel {
+                padding: 15px;
+            }
+            button {
+                font-size: 22px;
+                padding: 12px 20px;
+            }
+            p {
+                font-size: 18px;
+            }
+            h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
